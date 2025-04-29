@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
-import { Menu, ArrowLeft, ArrowRight, Home } from "lucide-react"
+import { Menu, ArrowLeft, ArrowRight, Home, LogOut, User } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 
@@ -12,8 +12,31 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userName, setUserName] = useState("")
+
   const router = useRouter()
   const pathname = usePathname()
+
+  // Check if user is authenticated
+  useEffect(() => {
+    // Check if we're in the browser environment
+    if (typeof window !== "undefined") {
+      const authToken = localStorage.getItem("authToken")
+      setIsAuthenticated(!!authToken)
+
+      // Get user name if available
+      const userStr = localStorage.getItem("user")
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr)
+          setUserName(user.name || user.companyName || user.departmentName || "User")
+        } catch (e) {
+          console.error("Error parsing user data:", e)
+        }
+      }
+    }
+  }, [])
 
   // Check if we can go back or forward
   useEffect(() => {
@@ -41,6 +64,19 @@ export default function Navbar() {
 
   const goForward = () => {
     router.forward()
+  }
+
+  const handleSignOut = () => {
+    // Clear authentication data
+    localStorage.removeItem("authToken")
+    localStorage.removeItem("user")
+    setIsAuthenticated(false)
+
+    // Close mobile menu if open
+    setIsMenuOpen(false)
+
+    // Redirect to home page
+    router.push("/")
   }
 
   return (
@@ -109,14 +145,41 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
+          {/* Authentication buttons for desktop */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="outline">Log in</Button>
-            </Link>
-            <Link href="/register">
-              <Button>Register</Button>
-            </Link>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {userName}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline">Log in</Button>
+                </Link>
+                <Link href="/register">
+                  <Button>Register</Button>
+                </Link>
+              </>
+            )}
           </div>
+
           <ModeToggle />
 
           {/* Mobile Menu */}
@@ -151,12 +214,31 @@ export default function Navbar() {
               <DropdownMenuItem asChild>
                 <Link href="/about">About</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/login">Log in</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/register">Register</Link>
-              </DropdownMenuItem>
+
+              {/* Authentication options for mobile */}
+              {isAuthenticated ? (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/login">Log in</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/register">Register</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

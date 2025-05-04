@@ -5,11 +5,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter, Briefcase, MapPin, Calendar } from "lucide-react"
 import Link from "next/link"
+import Head from "next/head"
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  description: string;
+  suitableFor: string[];
+  postedDate: string;
+  logo: string;
+}
 
 // Mock data for job listings
-const jobs = [
+const jobs: Job[] = [
   {
-    id: 1,
+    id: "1",
     title: "Accessibility Tester",
     company: "TechAccess Solutions",
     location: "Remote",
@@ -20,7 +33,7 @@ const jobs = [
     logo: "/placeholder.svg?height=40&width=40",
   },
   {
-    id: 2,
+    id: "2",
     title: "Customer Support Specialist",
     company: "Inclusive Services Inc.",
     location: "Delhi",
@@ -31,7 +44,7 @@ const jobs = [
     logo: "/placeholder.svg?height=40&width=40",
   },
   {
-    id: 3,
+    id: "3",
     title: "Data Entry Operator",
     company: "DataFirst Solutions",
     location: "Mumbai",
@@ -42,7 +55,7 @@ const jobs = [
     logo: "/placeholder.svg?height=40&width=40",
   },
   {
-    id: 4,
+    id: "4",
     title: "Content Writer",
     company: "Creative Minds Publishing",
     location: "Remote",
@@ -53,7 +66,7 @@ const jobs = [
     logo: "/placeholder.svg?height=40&width=40",
   },
   {
-    id: 5,
+    id: "5",
     title: "Accounting Assistant",
     company: "Financial Partners Ltd.",
     location: "Bangalore",
@@ -68,6 +81,9 @@ const jobs = [
 export default function JobsPage() {
   return (
     <main className="min-h-screen py-10">
+      <Head>
+        <title>Job Opportunities | Inclusive Jobs Portal</title>
+      </Head>
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -146,7 +162,7 @@ export default function JobsPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Link href={`/jobs/${job.id}`} className="w-full">
+                <Link href={`/apply/${job.id}`} className="w-full">
                   <Button className="w-full">Apply Now</Button>
                 </Link>
               </CardFooter>

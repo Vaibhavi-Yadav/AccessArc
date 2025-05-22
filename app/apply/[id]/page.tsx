@@ -1,13 +1,14 @@
 import JobApplicationForm from "@/components/JobApplicationForm"
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-const ApplyPage = ({ params }: Props) => {
-  return <JobApplicationForm jobId={params.id} />
+const ApplyPage = async ({ params }: Props) => {
+  const { id } = await params
+  return <JobApplicationForm jobId={id} />
 }
 
 export default ApplyPage

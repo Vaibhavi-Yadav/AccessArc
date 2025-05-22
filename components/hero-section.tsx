@@ -24,12 +24,7 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        <div className="mt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-2xl">
-          <p className="text-lg font-medium mb-2">Voice Navigation Enabled</p>
-          <p className="text-gray-600 dark:text-gray-300">
-            Say "Help" to learn voice commands or "Navigate to [page]" to move around
-          </p>
-        </div>
+        
       </div>
     </div>
   )

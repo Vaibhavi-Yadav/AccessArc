@@ -156,12 +156,9 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  {/* <DropdownMenuItem asChild>
                     <Link href="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign out
@@ -218,12 +215,10 @@ export default function Navbar() {
               {/* Authentication options for mobile */}
               {isAuthenticated ? (
                 <>
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                 
+                  {/* <DropdownMenuItem asChild>
                     <Link href="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign out

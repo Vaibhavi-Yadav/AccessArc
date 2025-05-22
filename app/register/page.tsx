@@ -62,7 +62,7 @@ const authoritySchema = z.object({
 
 export default function RegisterPage() {
   const searchParams = useSearchParams()
-  const typeParam = searchParams.get("type")
+  const typeParam = searchParams?.get("type")
   const [activeTab, setActiveTab] = useState(
     typeParam === "company" ? "company" : typeParam === "authority" ? "authority" : "individual",
   )

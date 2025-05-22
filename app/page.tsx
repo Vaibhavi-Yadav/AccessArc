@@ -11,7 +11,7 @@ import FeedbackForm from "@/components/feedback-form"
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <VoiceNavigation />
+      {/* <VoiceNavigation /> */}
       <HeroSection />
 
       <div className="container mx-auto py-12 px-4">

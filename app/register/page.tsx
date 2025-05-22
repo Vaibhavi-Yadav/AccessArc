@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -12,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
+import { useToast } from "@/components/ui/use-toast"
 
 const individualSchema = z.object({
   name: z.string().min(2, {
@@ -60,10 +62,14 @@ const authoritySchema = z.object({
 
 export default function RegisterPage() {
   const searchParams = useSearchParams()
-  const typeParam = searchParams.get("type")
+  const typeParam = searchParams?.get("type")
   const [activeTab, setActiveTab] = useState(
     typeParam === "company" ? "company" : typeParam === "authority" ? "authority" : "individual",
   )
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const { toast } = useToast()
 
   const individualForm = useForm<z.infer<typeof individualSchema>>({
     resolver: zodResolver(individualSchema),
@@ -96,21 +102,153 @@ export default function RegisterPage() {
   })
 
   function onIndividualSubmit(values: z.infer<typeof individualSchema>) {
-    console.log(values)
-    // In a real app, you would submit this to your backend
-    alert("Registration successful! Check your email to verify your account.")
+    setIsSubmitting(true)
+
+    // The backend expects the same fields as the form, but will transform them
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        password: values.password, // Will be hashed on server
+        disabilityType: values.disabilityType,
+        // The server will automatically set user_type as 'job_seeker'
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((data) => {
+            throw new Error(data.message || "Registration failed")
+          })
+        }
+        return res.json()
+      })
+      .then((data) => {
+        // Store token in localStorage or cookies
+        localStorage.setItem("authToken", data.token)
+
+        // Store user info if needed
+        localStorage.setItem("user", JSON.stringify(data.user))
+
+        // Show success message
+        toast({
+          title: "Registration successful!",
+          description: "Check your email to verify your account.",
+        })
+
+        // Redirect to dashboard
+        router.push("/")
+      })
+      .catch((error) => {
+        console.error("Registration error:", error)
+        toast({
+          title: "Registration failed",
+          description: error.message || "Please try again later.",
+          variant: "destructive",
+        })
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   function onCompanySubmit(values: z.infer<typeof companySchema>) {
-    console.log(values)
-    // In a real app, you would submit this to your backend
-    alert("Registration successful! Check your email to verify your account.")
+    setIsSubmitting(true)
+
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        companyName: values.companyName,
+        email: values.email,
+        password: values.password,
+        industry: values.industry,
+        // The server will automatically set user_type as 'company'
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((data) => {
+            throw new Error(data.message || "Registration failed")
+          })
+        }
+        return res.json()
+      })
+      .then((data) => {
+        localStorage.setItem("authToken", data.token)
+        localStorage.setItem("user", JSON.stringify(data.user))
+
+        toast({
+          title: "Registration successful!",
+          description: "Check your email to verify your account.",
+        })
+
+        router.push("/")
+      })
+      .catch((error) => {
+        console.error("Registration error:", error)
+        toast({
+          title: "Registration failed",
+          description: error.message || "Please try again later.",
+          variant: "destructive",
+        })
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   function onAuthoritySubmit(values: z.infer<typeof authoritySchema>) {
-    console.log(values)
-    // In a real app, you would submit this to your backend
-    alert("Registration successful! Check your email to verify your account.")
+    setIsSubmitting(true)
+
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        departmentName: values.departmentName,
+        email: values.email,
+        password: values.password,
+        jurisdiction: values.jurisdiction,
+        // The server will automatically set user_type as 'authority'
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((data) => {
+            throw new Error(data.message || "Registration failed")
+          })
+        }
+        return res.json()
+      })
+      .then((data) => {
+        localStorage.setItem("authToken", data.token)
+        localStorage.setItem("user", JSON.stringify(data.user))
+
+        toast({
+          title: "Registration successful!",
+          description: "Check your email to verify your account.",
+        })
+
+        router.push("/")
+      })
+      .catch((error) => {
+        console.error("Registration error:", error)
+        toast({
+          title: "Registration failed",
+          description: error.message || "Please try again later.",
+          variant: "destructive",
+        })
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   return (
@@ -201,8 +339,8 @@ export default function RegisterPage() {
                     )}
                   />
 
-                  <Button type="submit" className="w-full">
-                    Register as Individual
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "Registering..." : "Register as Individual"}
                   </Button>
                 </form>
               </Form>
@@ -279,8 +417,8 @@ export default function RegisterPage() {
                     )}
                   />
 
-                  <Button type="submit" className="w-full">
-                    Register as Company
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "Registering..." : "Register as Company"}
                   </Button>
                 </form>
               </Form>
@@ -354,8 +492,8 @@ export default function RegisterPage() {
                     )}
                   />
 
-                  <Button type="submit" className="w-full">
-                    Register as Authority
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "Registering..." : "Register as Authority"}
                   </Button>
                 </form>
               </Form>

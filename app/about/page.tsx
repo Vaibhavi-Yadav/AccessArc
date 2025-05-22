@@ -21,7 +21,7 @@ export default function AboutPage() {
             </p>
 
             <p className="mb-6">
-              Founded in 2023, AccessArc works closely with government departments, NGOs, and private companies to
+              AccessArc works closely with government departments, NGOs, and private companies to
               ensure that persons with disabilities have equal access to opportunities and support systems.
             </p>
           </div>

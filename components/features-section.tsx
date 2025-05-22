@@ -18,16 +18,7 @@ export default function FeaturesSection() {
       title: "Accessibility First",
       description: "Designed with accessibility as the priority, ensuring everyone can use the platform.",
     },
-    {
-      icon: <Headphones className="h-10 w-10 text-purple-600" />,
-      title: "Voice Navigation",
-      description: "Navigate the entire platform using voice commands and speech recognition.",
-    },
-    {
-      icon: <Globe className="h-10 w-10 text-purple-600" />,
-      title: "Language Translation",
-      description: "Hover over text to translate it into your preferred language using Google Translate.",
-    },
+   
   ]
 
   return (

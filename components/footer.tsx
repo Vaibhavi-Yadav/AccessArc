@@ -102,19 +102,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="font-medium text-lg mb-4">Subscribe to Our Newsletter</h3>
-            <p className="text-muted-foreground mb-4">
-              Stay updated with the latest schemes, job opportunities, and resources.
-            </p>
-            <div className="flex gap-2">
-              <div className="relative flex-grow">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input type="email" placeholder="Your email" className="pl-10" />
-              </div>
-              <Button>Subscribe</Button>
-            </div>
-          </div>
+         
         </div>
 
         <div className="mt-12 pt-6 border-t text-center text-muted-foreground">
